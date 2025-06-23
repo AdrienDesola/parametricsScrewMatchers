@@ -7,7 +7,7 @@ jar_mouth_type = "wide"; // [regular:Regular Mouth, wide:Wide Mouth]
 // Standard mason jar band inner diameters (mm)
 jar_band_diameter_regular = 70;
 jar_band_diameter_wide = 86;
-jar_band_offset = 7; // mm, offset for the band ledge
+jar_band_offset = 5; // mm, offset for the band ledge
 
 // Select band diameter based on mouth type
 jar_band_diameter = (jar_mouth_type == "wide") ? jar_band_diameter_wide - jar_band_offset : jar_band_diameter_regular - jar_band_offset;
@@ -20,8 +20,8 @@ thread_turns = 1.5;  // number of thread turns (positive: right-hand, negative: 
 threaded_length = thread_pitch * thread_turns; // mm, total length of the threaded section
 
 // Body parameters
-shank_length = 0;   // mm, length of the unthreaded shank (below the thread)
-head_height = 0;     // mm, height of the head/collar (above the thread)
+shank_length = 1;   // mm, length of the unthreaded shank (below the thread)
+head_height = 1;     // mm, height of the head/collar (above the thread)
 
 // Adaptor disk parameters
 flange_thickness = 1;           // mm, thickness of the adaptor flange
@@ -37,7 +37,7 @@ band_inner_ledge_diameter = jar_band_diameter - jar_band_offset; // mm, inner di
 total_height = flange_thickness + shank_length + threaded_length + head_height;
 
 // Use a square thread profile for better 3D printability
-thread_profile_square = true; // [true:Square (3D print friendly), false:ISO Metric (V-thread)]
+thread_profile_square = false; // [true:Square (3D print friendly), false:ISO Metric (V-thread)]
 
 // Calculate thread height (h) and factor (h_fac2) for square or V-thread
 h_fac2 = thread_profile_square ? 0.95 : 5.3/8;
