@@ -1,42 +1,45 @@
 use <threads.scad>;  // DKProjects threadlib
 $fn = 100;
 
-in_diameter_minimal = 35; // mm, minimum diameter for the pepper grinder thread
-in_diameter = 37; // mm, diameter of the pepper grinder thread
-in_pitch = 4;
-loop = 1.5; // 1 for right hand thread, -1 for left hand thread
-in_height = in_pitch * loop; // Height of the thread
+// Thread parameters
+minor_diameter = 35; // mm, minor diameter (root diameter) of the external thread
+major_diameter = 37; // mm, major diameter (crest diameter) of the external thread
+thread_pitch = 4;    // mm, thread pitch (distance between threads)
+thread_turns = 1.5;  // number of thread turns (positive: right-hand, negative: left-hand)
+threaded_length = thread_pitch * thread_turns; // mm, total length of the threaded section
 
-base_height = 10; // mm, height below the thread
-collar_height = 1; // mm, height above the thread
+// Body parameters
+shank_length = 10;   // mm, length of the unthreaded shank (below the thread)
+head_height = 1;     // mm, height of the head/collar (above the thread)
 
-// Parameters
-outer_diameter = 69.5; // mm, mason jar band
-thickness = 1;         // mm, disk thickness
-center_hole = in_diameter_minimal; // for disk, not used now
-hole_diameter = in_diameter_minimal - 2; // mm, central hole
+// Adaptor disk parameters
+jar_band_diameter = 69.5; // mm, inner diameter of mason jar band
+flange_thickness = 1;     // mm, thickness of the adaptor flange
 
-total_height = thickness + base_height + in_height + collar_height;
+// Through hole parameters
+through_hole_diameter = minor_diameter - 10; // mm, diameter of the through hole (adjust as needed)
 
-// Combined adaptor: disk + screw + central hole
+total_height = flange_thickness + shank_length + threaded_length + head_height;
+
+// Combined adaptor: flange + shank + threaded section + head, with through hole
 
 difference() {
     union() {
-        // Flat adaptor disk
-        cylinder(d=outer_diameter, h=thickness);
-        // Screw (base, thread, collar) on top of disk
-        translate([0,0,thickness]) {
-            // Base
-            cylinder(d=in_diameter_minimal, h=base_height);
-            // Thread
-            translate([0,0,base_height])
-                metric_thread(diameter = in_diameter, pitch = in_pitch, length = in_height);
-            // Collar
-            translate([0,0,base_height+in_height])
-                cylinder(d=in_diameter_minimal, h=collar_height);
+        // Adaptor flange (disk)
+        cylinder(d=jar_band_diameter, h=flange_thickness);
+        // Shank, threaded section, and head stacked on top of flange
+        translate([0,0,flange_thickness]) {
+            // Unthreaded shank
+            cylinder(d=minor_diameter, h=shank_length);
+            // Threaded section
+            translate([0,0,shank_length])
+                metric_thread(diameter = major_diameter, pitch = thread_pitch, length = threaded_length);
+            // Head/collar
+            translate([0,0,shank_length+threaded_length])
+                cylinder(d=minor_diameter, h=head_height);
         }
     }
-    // Central hole through everything, start slightly below and extend above
+    // Through hole, offset slightly below and above to avoid coplanar artifacts
     translate([0,0,-0.1])
-        cylinder(d=in_diameter_minimal - 10, h=total_height+2);
+        cylinder(d=through_hole_diameter, h=total_height+2);
 }
