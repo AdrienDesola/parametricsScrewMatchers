@@ -1,5 +1,5 @@
 use <threads.scad>;  // DKProjects threadlib
-$fn = 100;
+$fn = 500;
 
 // Mason jar mouth type: select Regular or Wide
 jar_mouth_type = "wide"; // [regular:Regular Mouth, wide:Wide Mouth]
@@ -36,12 +36,10 @@ band_inner_ledge_diameter = jar_band_diameter - jar_band_offset; // mm, inner di
 
 total_height = flange_thickness + shank_length + threaded_length + head_height;
 
-// Use a square thread profile for better 3D printability
-thread_profile_square = false; // [true:Square (3D print friendly), false:ISO Metric (V-thread)]
-
-// Calculate thread height (h) and factor (h_fac2) for square or V-thread
-h_fac2 = thread_profile_square ? 0.95 : 5.3/8;
-thread_height = thread_profile_square ? thread_pitch/2 : thread_pitch / (2 * tan(30));
+// Use ISO Metric (V-thread) profile only
+// Calculate thread height (h) and factor (h_fac2) for ISO metric thread
+h_fac2 = 5.3/8;
+thread_height = thread_pitch / (2 * tan(30));
 thread_root_diameter = major_diameter - 2 * thread_height * h_fac2;
 
 // Combined adaptor: flange + shank + threaded section + head, with through hole
@@ -57,9 +55,9 @@ difference() {
         translate([0,0,flange_thickness+support_disk_thickness]) {
             // Unthreaded shank
             cylinder(d=thread_root_diameter, h=shank_length);
-            // Threaded section (square thread for 3D printability)
+            // Threaded section (ISO metric V-thread)
             translate([0,0,shank_length])
-                metric_thread(diameter = major_diameter, pitch = thread_pitch, length = threaded_length, square = thread_profile_square);
+                metric_thread(diameter = major_diameter, pitch = thread_pitch, length = threaded_length);
             // Head/collar
             translate([0,0,shank_length+threaded_length])
                 cylinder(d=thread_root_diameter, h=head_height);
