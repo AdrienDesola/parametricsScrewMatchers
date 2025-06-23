@@ -7,9 +7,10 @@ jar_mouth_type = "regular"; // [regular:Regular Mouth, wide:Wide Mouth]
 // Standard mason jar band inner diameters (mm)
 jar_band_diameter_regular = 70;
 jar_band_diameter_wide = 86;
+jar_band_offset = 7; // mm, offset for the band ledge
 
 // Select band diameter based on mouth type
-jar_band_diameter = (jar_mouth_type == "wide") ? jar_band_diameter_wide : jar_band_diameter_regular;
+jar_band_diameter = (jar_mouth_type == "wide") ? jar_band_diameter_wide - jar_band_offset : jar_band_diameter_regular - jar_band_offset;
 
 // Thread parameters
 minor_diameter = 35; // mm, minor diameter (root diameter) of the external thread
@@ -25,15 +26,18 @@ head_height = 1;     // mm, height of the head/collar (above the thread)
 // Adaptor disk parameters
 flange_thickness = 1;           // mm, thickness of the adaptor flange
 // Thickness of the centering/support disk
-support_disk_thickness = 2; // [0.5:0.1:5]
+support_disk_thickness = 1; // [0.5:0.1:5]
 
 // Through hole parameters
-through_hole_diameter = minor_diameter - 10; // mm, diameter of the through hole (adjust as needed)
+through_hole_diameter = minor_diameter - 4; // mm, diameter of the through hole (adjust as needed)
 
 // Inner ledge diameter of the mason jar band (where the lid sits)
-band_inner_ledge_diameter = 65; // [60:0.5:80]
+band_inner_ledge_diameter = jar_band_diameter - jar_band_offset; // mm, inner diameter of the band ledge
 
 total_height = flange_thickness + shank_length + threaded_length + head_height;
+
+// Use a square thread profile for better 3D printability
+thread_profile_square = true; // [true:Square (3D print friendly), false:ISO Metric (V-thread)]
 
 // Combined adaptor: flange + shank + threaded section + head, with through hole
 
@@ -48,15 +52,15 @@ difference() {
         translate([0,0,flange_thickness+support_disk_thickness]) {
             // Unthreaded shank
             cylinder(d=minor_diameter, h=shank_length);
-            // Threaded section
+            // Threaded section (square thread for 3D printability)
             translate([0,0,shank_length])
-                metric_thread(diameter = major_diameter, pitch = thread_pitch, length = threaded_length);
+                metric_thread(diameter = major_diameter, pitch = thread_pitch, length = threaded_length, square = thread_profile_square);
             // Head/collar
             translate([0,0,shank_length+threaded_length])
                 cylinder(d=minor_diameter, h=head_height);
         }
     }
     // Through hole, offset slightly below and above to avoid coplanar artifacts
-    translate([0,0,-0.1])
+    translate([0,0,-1])
         cylinder(d=through_hole_diameter, h=total_height+support_disk_thickness+2);
 }
