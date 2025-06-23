@@ -1,5 +1,5 @@
 use <threads.scad>;  // DKProjects threadlib
-$fn = 500;
+$fn = 100;
 
 // Mason jar mouth type: select Regular or Wide
 jar_mouth_type = "wide"; // [regular:Regular Mouth, wide:Wide Mouth]
