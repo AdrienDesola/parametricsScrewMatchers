@@ -1,6 +1,16 @@
 use <threads.scad>;  // DKProjects threadlib
 $fn = 100;
 
+// Mason jar mouth type: select Regular or Wide
+jar_mouth_type = "regular"; // [regular:Regular Mouth, wide:Wide Mouth]
+
+// Standard mason jar band inner diameters (mm)
+jar_band_diameter_regular = 70;
+jar_band_diameter_wide = 86;
+
+// Select band diameter based on mouth type
+jar_band_diameter = (jar_mouth_type == "wide") ? jar_band_diameter_wide : jar_band_diameter_regular;
+
 // Thread parameters
 minor_diameter = 35; // mm, minor diameter (root diameter) of the external thread
 major_diameter = 37; // mm, major diameter (crest diameter) of the external thread
@@ -13,8 +23,7 @@ shank_length = 10;   // mm, length of the unthreaded shank (below the thread)
 head_height = 1;     // mm, height of the head/collar (above the thread)
 
 // Adaptor disk parameters
-jar_band_diameter = 69.5; // mm, inner diameter of mason jar band
-flange_thickness = 1;     // mm, thickness of the adaptor flange
+flange_thickness = 1;           // mm, thickness of the adaptor flange
 
 // Through hole parameters
 through_hole_diameter = minor_diameter - 10; // mm, diameter of the through hole (adjust as needed)
